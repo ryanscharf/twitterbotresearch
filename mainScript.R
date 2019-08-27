@@ -34,20 +34,20 @@ b1 <- data.frame()
 #b2 <- botornot(b$screen_name, fast = T)
 
 #ratelimitretry
-rtlimit <- rate_limit()[11,]  #49 for fast, 11 for normal
-remaining <- rtlimit[["remaining"]]
-reset <- rtlimit[["reset"]]
-reset <- as.numeric(reset, "secs")
+# rtlimit <- rate_limit()[11,]  #49 for fast, 11 for normal
+# remaining <- rtlimit[["remaining"]]
+# reset <- rtlimit[["reset"]]
+# reset <- as.numeric(reset, "secs")
 
 #for(i in (nrow(b1) +1):nrow(b)){
-#  if (remaining < 2){
-    message(paste0(
-      "retry on rate limit...\n",
-      "waiting about ",
-      round(reset / 60, 0),
-      " minutes..."))
-    Sys.sleep(reset + 2)
-  }
+# #  if (remaining < 2){
+#     message(paste0(
+#       "retry on rate limit...\n",
+#       "waiting about ",
+#       round(reset / 60, 0),
+#       " minutes..."))
+#     Sys.sleep(reset + 2)
+#   }
 #  
 #  else{
 #    suppressWarnings(tryCatch(
@@ -76,7 +76,7 @@ reset <- as.numeric(reset, "secs")
 #  print(remaining)
 #}
 
-b1 <- data.frame()  
+#b1 <- data.frame()  
 
 #trying smater rate limit
 while(nrow(b1) < nrow(b)){
@@ -232,3 +232,8 @@ rtg2ru <- rtg2ru %>% mutate_at(c("tweets", "retweets", "hashtags", "mentions", "
 #                                        hash = mean(hashtags, na.rm = T),
 #                                        ulength = mean(ulength, na.rm = T)) %>% 
 #  mutate_at(c("tweets", "retweets", "hash", "ment", "ulength"), scale) %>% View()
+
+trumpnet_acc_created <- read_csv("trumpnet_acc_created.csv")
+rtg2ru <- rtg2ru %>% left_join(trumpnet_acc_created, by = c("Label" = "screen_name"))
+rtg2ru <- rtg2ru %>% mutate( account_created_at = scale(account_created_at))
+

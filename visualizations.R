@@ -50,16 +50,31 @@ ggplot(rtg2r, aes(x=as.character(clus), y=botornotf)) + ###
 ggsave("botornotfastnj.png", width = 6, height = 6, units = "in", dpi = 300, type = "cairo")
 
 
+#median noot used
+#rtg2ru %>% group_by(clus) %>% 
+#  summarize_at(c("tweets_zsc", "retweets_zsc", "hashtags_zsc", "mentions_zsc", "acc_create_zsc", "URLs_zsc"), median, na.rm = T) %>% 
+#  gather(attribute, tweets_zsc, retweets_zsc, hashtags_zsc, mentions_zsc, acc_create_zsc, URLs_zsc) %>%
+#  ggplot(aes(x = attribute, y = tweets_zsc, fill = clus)) + geom_bar(stat = "identity", position = "dodge") + coord_flip() +
+#  scale_y_continuous(limits = c(-1,1)) + theme_fivethirtyeight(base_size = 18) + labs(y = "Z-score", x = "") + 
+#  scale_fill_discrete(name = "")
 
-rtg2ru %>% group_by(clus) %>% 
-  summarize_at(c("tweets_zsc", "retweets_zsc", "hashtags_zsc", "mentions_zsc", "ulength_zsc"), median, na.rm = T) %>% 
-  gather(attribute, tweets_zsc, retweets_zsc, hashtags_zsc, mentions_zsc, ulength_zsc) %>%
+#ggsave("zscoremedian.png", width = 6, height = 6, units = "in", dpi = 300, type = "cairo") ###
+
+
+rtg2ru %>% filter(!is.na(tweets_zsc)) %>% group_by(clus) %>% 
+  summarize_at(c("tweets_zsc", "retweets_zsc", "hashtags_zsc", "mentions_zsc", "acc_create_zsc", "URLs_zsc"), mean, na.rm = T) %>% 
+  gather(attribute, tweets_zsc, retweets_zsc, hashtags_zsc, mentions_zsc, acc_create_zsc, URLs_zsc) %>%
   ggplot(aes(x = attribute, y = tweets_zsc, fill = clus)) + geom_bar(stat = "identity", position = "dodge") + coord_flip() +
   scale_y_continuous(limits = c(-1,1)) + theme_fivethirtyeight(base_size = 18) + labs(y = "Z-score", x = "") + 
-  scale_fill_discrete(name = "")
+  theme(plot.background = element_rect(fill = 'white', colour = 'white'),
+        panel.background = element_rect(fill = 'white', colour = 'white'),
+        legend.background  = element_rect(fill = "white"),
+        plot.title = element_text(size=18)) +
+  scale_fill_manual(values=c("#660099", "#006600", "#ccffcc"), labels = c("L","R1","R2"), name = "Clusters  ") +
+  scale_x_discrete(labels = c("Account Age", 'Hashtags', 'Mentions', 'Retweets', 'URLs')) + 
+  ggtitle("Mean Z-Score per Cluster") 
 
-ggsave("zscoremedian.png", width = 6, height = 6, units = "in", dpi = 300, type = "cairo") ###
-
+ggsave("zscoremean2.png", width = 6, height = 6, units = "in", dpi = 300, type = "cairo")
 
 rtg2ru %>% select(Label, tweets_zsc, retweets_zsc, hashtags_zsc, mentions_zsc, ulength_zsc) %>%
   gather(attribute, tweets_zsc, retweets_zsc, hashtags_zsc, mentions_zsc, ulength_zsc) %>%

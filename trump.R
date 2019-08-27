@@ -269,12 +269,9 @@ emojis_matching <- function(texts, matchto, description, sentiment = NA) {
 }
 
 
-
-
-
-a <- "banana banana bongo pig table cat banana ban"
-b <- c("ban", "pig", "cat")
-str_count(a, b, fixed = T)
+# a <- "banana banana bongo pig table cat banana ban"
+# b <- c("ban", "pig", "cat")
+# str_count(a, b, fixed = T)
 
 usergroupingsbackup <- apply(usergroupings[,1], 1, function(x) botcheck(x))
 ug1 <- sapply(usergroupingsbackup, function(x) ifelse(x == "NULL", NA, x))
@@ -295,116 +292,116 @@ b <- t(plyr::rbind.fill.matrix(lapply(a, t)))
 b <- t(b)
 
 
-
-#parsing botornot
-b <- usergroupings1[!is.na(usergroupings1$botometer), 1]
-names(b) <- "screen_name"
-b <- botornot(b$screen_name, fast = TRUE)
-b1 <- data.frame()
-
-for(i in (nrow(b1) +1):nrow(b)){
-  
-  t <- botornot(b$screen_name[i])
-  b1 <- rbind(b1, t)
- # print(rate_limits(query = "get_timeline") )
-}
-
-
-
-#ratelimittry
-for(i in (nrow(b1) +1):nrow(b)){
-  rtlimit <- rate_limit()[11,]
-  remaining <- rtlimit[["remaining"]]
-  reset <- rtlimit[["reset"]]
-  reset <- as.numeric(reset, "secs")
-  
-  if (remaining < 2){
-    message(paste0(
-      "retry on rate limit...\n",
-      "waiting about ",
-      round(reset / 60, 0),
-      " minutes..."))
-    Sys.sleep(reset + 2)
-  }
-  
-  else{
-  t <- botornot(b$screen_name[i])
-  b1 <- rbind(b1, t)
-  print(remaining)
-      }
-  }
-#19 missing users
-
-b2 <- usergroupings1 %>% left_join(b1, by = c("label" = "user")) %>% filter(!is.na(botometer) & is.na(prob_bot)) %>%
-  select(label)
-b3 <- data.frame()
-
-for(i in (nrow(b3) +1):nrow(b2)){
-  rtlimit <- rate_limit()[11,]
-  remaining <- rtlimit[["remaining"]]
-  reset <- rtlimit[["reset"]]
-  reset <- as.numeric(reset, "secs")
-  
-  if (remaining < 2){
-    message(paste0(
-      "retry on rate limit...\n",
-      "waiting about ",
-      round(reset / 60, 0),
-      " minutes..."))
-    Sys.sleep(reset + 2)
-  }
-  
-  else{
-    t <- botornot(b2$label[i])
-    b3 <- rbind(b3, t)
-    print(remaining)
-  }
-}
-
-b1 <- b1 %>% left_join(b3)
-
-
-usergroupings1 <- usergroupings1 %>% left_join(b1,by = c("label" = "user"))
-
-rate_limits() %>% mutate(diff = limit - remaining) %>% View()
-
-usergroupings1 %>% filter(!is.na(botometer) & is.na(prob_bot)) %>% View()
-
-
-
-
-
-#violin boxplots for groups
-ggplot(usergroupings1, aes(x=group, y=botometer))+geom_boxplot()+
-  geom_violin(fill='lightblue', alpha=0.5) + 
-  geom_jitter(alpha =.2, position = position_jitter(width = .2)) +
-  geom_hline(yintercept = .43, col = "red")
-
-#histogram boxplot
-plt1 <- ggplot(usergroupings1, aes(x = "", y = botometer)) +
-  geom_boxplot(fill = "lightblue", color = "black") + 
-  coord_flip() +
-  theme_classic() +
-  xlab("") +geom_hline(yintercept = .43, col = "red") +
-  theme(axis.text.y=element_blank(),
-        axis.ticks.y=element_blank())
-
-plt2 <- ggplot(usergroupings1, aes(x = botometer)) + geom_histogram(fill = "lightblue", 
-                                                                    color = "black", bins = 20) +
-  ylab("Frequency") + geom_vline(xintercept = .43, col = "red") +
-  theme_classic()
-
-cowplot::plot_grid(plt2, plt1, 
-                   ncol = 1, rel_heights = c(2, 1),
-                   align = 'v', axis = 'lr') 
-
-
-
-
-conctext <- paste(trump_forml$text, collapse = "")
-unique(conctext)
-
-
-test <- trump_forml[1:5,]
-conctext <- paste(trump_forml$text, collapse = "")
-uniquechars <- unique(strsplit(tolower(conctext), "")[[1]])
+# 
+# #parsing botornot
+# b <- usergroupings1[!is.na(usergroupings1$botometer), 1]
+# names(b) <- "screen_name"
+# b <- botornot(b$screen_name, fast = TRUE)
+# b1 <- data.frame()
+# 
+# for(i in (nrow(b1) +1):nrow(b)){
+#   
+#   t <- botornot(b$screen_name[i])
+#   b1 <- rbind(b1, t)
+#  # print(rate_limits(query = "get_timeline") )
+# }
+# 
+# 
+# 
+# #ratelimittry
+# for(i in (nrow(b1) +1):nrow(b)){
+#   rtlimit <- rate_limit()[11,]
+#   remaining <- rtlimit[["remaining"]]
+#   reset <- rtlimit[["reset"]]
+#   reset <- as.numeric(reset, "secs")
+#   
+#   if (remaining < 2){
+#     message(paste0(
+#       "retry on rate limit...\n",
+#       "waiting about ",
+#       round(reset / 60, 0),
+#       " minutes..."))
+#     Sys.sleep(reset + 2)
+#   }
+#   
+#   else{
+#   t <- botornot(b$screen_name[i])
+#   b1 <- rbind(b1, t)
+#   print(remaining)
+#       }
+#   }
+# #19 missing users
+# 
+# b2 <- usergroupings1 %>% left_join(b1, by = c("label" = "user")) %>% filter(!is.na(botometer) & is.na(prob_bot)) %>%
+#   select(label)
+# b3 <- data.frame()
+# 
+# for(i in (nrow(b3) +1):nrow(b2)){
+#   rtlimit <- rate_limit()[11,]
+#   remaining <- rtlimit[["remaining"]]
+#   reset <- rtlimit[["reset"]]
+#   reset <- as.numeric(reset, "secs")
+#   
+#   if (remaining < 2){
+#     message(paste0(
+#       "retry on rate limit...\n",
+#       "waiting about ",
+#       round(reset / 60, 0),
+#       " minutes..."))
+#     Sys.sleep(reset + 2)
+#   }
+#   
+#   else{
+#     t <- botornot(b2$label[i])
+#     b3 <- rbind(b3, t)
+#     print(remaining)
+#   }
+# }
+# 
+# b1 <- b1 %>% left_join(b3)
+# 
+# 
+# usergroupings1 <- usergroupings1 %>% left_join(b1,by = c("label" = "user"))
+# 
+# rate_limits() %>% mutate(diff = limit - remaining) %>% View()
+# 
+# usergroupings1 %>% filter(!is.na(botometer) & is.na(prob_bot)) %>% View()
+# 
+# 
+# 
+# 
+# 
+# #violin boxplots for groups
+# ggplot(usergroupings1, aes(x=group, y=botometer))+geom_boxplot()+
+#   geom_violin(fill='lightblue', alpha=0.5) + 
+#   geom_jitter(alpha =.2, position = position_jitter(width = .2)) +
+#   geom_hline(yintercept = .43, col = "red")
+# 
+# #histogram boxplot
+# plt1 <- ggplot(usergroupings1, aes(x = "", y = botometer)) +
+#   geom_boxplot(fill = "lightblue", color = "black") + 
+#   coord_flip() +
+#   theme_classic() +
+#   xlab("") +geom_hline(yintercept = .43, col = "red") +
+#   theme(axis.text.y=element_blank(),
+#         axis.ticks.y=element_blank())
+# 
+# plt2 <- ggplot(usergroupings1, aes(x = botometer)) + geom_histogram(fill = "lightblue", 
+#                                                                     color = "black", bins = 20) +
+#   ylab("Frequency") + geom_vline(xintercept = .43, col = "red") +
+#   theme_classic()
+# 
+# cowplot::plot_grid(plt2, plt1, 
+#                    ncol = 1, rel_heights = c(2, 1),
+#                    align = 'v', axis = 'lr') 
+# 
+# 
+# 
+# 
+# conctext <- paste(trump_forml$text, collapse = "")
+# unique(conctext)
+# 
+# 
+# test <- trump_forml[1:5,]
+# conctext <- paste(trump_forml$text, collapse = "")
+# uniquechars <- unique(strsplit(tolower(conctext), "")[[1]])
